@@ -23,7 +23,7 @@
 }
 .leftSide button {
   margin-top: 15px;
-  padding: 10px 15px;
+  padding: 5px 10px;
   background-color: white;
   border: 1px solid black;
   border-radius: 100vh;
@@ -33,8 +33,19 @@
   border-bottom: 2px solid black;
   width: 100%;
   text-align: center;
-  padding-bottom: 15px;
+  padding: 15px 0;
+}
+.leftSide .buttonBorderDiv input {
+  width: 75%;
+  padding: 2.5px 5px;
 }
 .leftSide .listsDiv {
-  padding-top: 20px;
+  padding: 20px 5px;
+  height: auto;
+  width: 100%;
+  text-align: center;
+}
+.leftSide .listsDiv li {
+  list-style-type: none;
+  padding: 10px 0;
 }/*# sourceMappingURL=style.css.map */
