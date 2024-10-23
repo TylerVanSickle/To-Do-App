@@ -1,3 +1,5 @@
+// Get all the first variables and constants
+
 const listContainer = document.getElementById('listContainer');
 const addListButton = document.getElementById('addListButton');
 const listNameInput = document.getElementById('listName');
@@ -5,7 +7,7 @@ const mainSide = document.querySelector('.mainSide');
 
 let lists = JSON.parse(localStorage.getItem('lists')) || {}; 
 let currentList = null;
-
+// ADD THE LISTS
 addListButton.addEventListener('click', () => {
     const listName = listNameInput.value.trim();
 
@@ -44,7 +46,7 @@ function renderLists() {
         listContainer.appendChild(listElement);
     }
 }
-
+// ADD THE TASKS TO THE LIST
 function renderTasks() {
     mainSide.innerHTML = '';
 
@@ -77,15 +79,26 @@ function renderTasks() {
             noTasksMessage.textContent = 'No tasks available for this list.';
             mainSide.appendChild(noTasksMessage);
         } else {
-            lists[currentList].forEach((task, index) => {
+            lists[currentList].forEach((taskObj, index) => {
                 const taskItem = document.createElement('li');
+                taskItem.classList.add('task-item');
 
                 const taskContent = document.createElement('span');
-                taskContent.textContent = task;
+                taskContent.textContent = taskObj.task;
+                
+                if (taskObj.completed) {
+                    taskContent.classList.add('completed');
+                }
+
+                taskContent.addEventListener('click', () => {
+                    taskObj.completed = !taskObj.completed;
+                    saveListsToLocalStorage(); 
+                    renderTasks(); 
+                });
 
                 const buttonGroup = document.createElement('div');
                 buttonGroup.classList.add('button-group');
-
+                // DELETE
                 const deleteButton = document.createElement('button');
                 deleteButton.textContent = 'Delete';
                 deleteButton.classList.add('delete-task-btn');
@@ -94,24 +107,24 @@ function renderTasks() {
                     saveListsToLocalStorage(); 
                     renderTasks();
                 });
-
+                // EDIT
                 const editButton = document.createElement('button');
                 editButton.textContent = 'Edit';
                 editButton.classList.add('edit-task-btn');
                 editButton.addEventListener('click', () => {
                     const inputField = document.createElement('input');
                     inputField.type = 'text';
-                    inputField.value = task;
+                    inputField.value = taskObj.task;
 
                     taskItem.replaceChild(inputField, taskContent);
-
+                    // SAVE THE EDIT
                     const saveButton = document.createElement('button');
                     saveButton.textContent = 'Save';
                     saveButton.classList.add('save-task-btn');
                     saveButton.addEventListener('click', () => {
                         const newTask = inputField.value.trim();
                         if (newTask.length > 0) {
-                            lists[currentList][index] = newTask;
+                            taskObj.task = newTask;
                             saveListsToLocalStorage(); 
                             renderTasks();
                         } else {
@@ -140,7 +153,7 @@ function renderTasks() {
         function addTask() {
             const newTask = taskInput.value.trim();
             if (newTask.length > 0) {
-                lists[currentList].push(newTask);
+                lists[currentList].push({ task: newTask, completed: false }); 
                 saveListsToLocalStorage(); 
                 taskInput.value = '';
                 renderTasks();

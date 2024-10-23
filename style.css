@@ -136,4 +136,9 @@
   width: 100vw;
   height: 100vh;
   display: flex;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: grey;
 }/*# sourceMappingURL=style.css.map */

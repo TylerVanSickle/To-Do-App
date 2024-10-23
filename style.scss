@@ -146,3 +146,8 @@
     height: 100vh;
     display: flex;
 }
+
+.completed {
+    text-decoration: line-through;
+    color: grey;
+}
