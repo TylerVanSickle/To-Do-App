@@ -3,7 +3,7 @@ const addListButton = document.getElementById('addListButton');
 const listNameInput = document.getElementById('listName');
 const mainSide = document.querySelector('.mainSide');
 
-let lists = {};
+let lists = JSON.parse(localStorage.getItem('lists')) || {}; 
 let currentList = null;
 
 addListButton.addEventListener('click', () => {
@@ -15,17 +15,21 @@ addListButton.addEventListener('click', () => {
     }
 
     if (!lists[listName]) {
-        lists[listName] = []; 
-        console.log(`Added new list: ${listName}`, lists); 
-        renderLists(); 
-        listNameInput.value = ''; 
+        lists[listName] = [];
+        saveListsToLocalStorage(); 
+        renderLists();
+        listNameInput.value = '';
     } else {
-        alert('List with this name already exists.');
+        alert('List with this name already exists. Please enter a new name.');
     }
 });
 
+function saveListsToLocalStorage() {
+    localStorage.setItem('lists', JSON.stringify(lists)); 
+}
+
 function renderLists() {
-    listContainer.innerHTML = ''; 
+    listContainer.innerHTML = '';
 
     for (const listName in lists) {
         const listElement = document.createElement('div');
@@ -33,26 +37,22 @@ function renderLists() {
         listElement.textContent = listName;
 
         listElement.addEventListener('click', () => {
-            currentList = listName; 
-            console.log(`Selected list: ${listName}`, lists); 
-            renderTasks(); 
+            currentList = listName;
+            renderTasks();
         });
 
-        listContainer.appendChild(listElement); 
+        listContainer.appendChild(listElement);
     }
 }
 
 function renderTasks() {
-    mainSide.innerHTML = ''; 
+    mainSide.innerHTML = '';
 
     if (currentList) {
-        console.log(`Rendering tasks for list: ${currentList}`, lists[currentList]); 
-
         const title = document.createElement('h2');
         title.textContent = `Tasks for "${currentList}"`;
         mainSide.appendChild(title);
 
-        // Add a container for adding new tasks
         const addTaskContainer = document.createElement('div');
         addTaskContainer.classList.add('add-task-container');
 
@@ -72,7 +72,6 @@ function renderTasks() {
         const taskList = document.createElement('ul');
         taskList.classList.add('task-list');
 
-        // Check if there are tasks in the current list
         if (lists[currentList].length === 0) {
             const noTasksMessage = document.createElement('p');
             noTasksMessage.textContent = 'No tasks available for this list.';
@@ -80,34 +79,71 @@ function renderTasks() {
         } else {
             lists[currentList].forEach((task, index) => {
                 const taskItem = document.createElement('li');
-                taskItem.textContent = task;
+
+                const taskContent = document.createElement('span');
+                taskContent.textContent = task;
+
+                const buttonGroup = document.createElement('div');
+                buttonGroup.classList.add('button-group');
 
                 const deleteButton = document.createElement('button');
                 deleteButton.textContent = 'Delete';
                 deleteButton.classList.add('delete-task-btn');
                 deleteButton.addEventListener('click', () => {
-                    lists[currentList].splice(index, 1); 
-                    console.log(`Deleted task: "${task}" from list: ${currentList}`); 
-                    renderTasks(); 
+                    lists[currentList].splice(index, 1);
+                    saveListsToLocalStorage(); 
+                    renderTasks();
                 });
 
-                taskItem.appendChild(deleteButton); 
-                taskList.appendChild(taskItem); 
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Edit';
+                editButton.classList.add('edit-task-btn');
+                editButton.addEventListener('click', () => {
+                    const inputField = document.createElement('input');
+                    inputField.type = 'text';
+                    inputField.value = task;
+
+                    taskItem.replaceChild(inputField, taskContent);
+
+                    const saveButton = document.createElement('button');
+                    saveButton.textContent = 'Save';
+                    saveButton.classList.add('save-task-btn');
+                    saveButton.addEventListener('click', () => {
+                        const newTask = inputField.value.trim();
+                        if (newTask.length > 0) {
+                            lists[currentList][index] = newTask;
+                            saveListsToLocalStorage(); 
+                            renderTasks();
+                        } else {
+                            alert('Task cannot be empty.');
+                        }
+                    });
+
+                    taskItem.appendChild(saveButton);
+                });
+
+                buttonGroup.appendChild(editButton);
+                buttonGroup.appendChild(deleteButton);
+
+                taskItem.appendChild(taskContent);
+                taskItem.appendChild(buttonGroup);
+
+                taskList.appendChild(taskItem);
             });
         }
 
         mainSide.appendChild(taskList);
 
-        addTaskButton.removeEventListener('click', addTask); 
-        addTaskButton.addEventListener('click', addTask); 
+        addTaskButton.removeEventListener('click', addTask);
+        addTaskButton.addEventListener('click', addTask);
 
         function addTask() {
             const newTask = taskInput.value.trim();
             if (newTask.length > 0) {
-                lists[currentList].push(newTask); 
-                console.log(`Added task: "${newTask}" to list: ${currentList}`, lists[currentList]); 
-                taskInput.value = ''; 
-                renderTasks(); 
+                lists[currentList].push(newTask);
+                saveListsToLocalStorage(); 
+                taskInput.value = '';
+                renderTasks();
             } else {
                 alert('Task cannot be empty.');
             }
@@ -115,4 +151,4 @@ function renderTasks() {
     }
 }
 
-renderLists();
+renderLists(); 

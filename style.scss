@@ -68,14 +68,12 @@
     }
 }
 
-/* Styles for task input container */
 .add-task-container {
     margin-bottom: 20px;
     display: flex;
     align-items: center;
 }
 
-/* Button to add tasks */
 .add-task-btn {
     padding: 8px 15px;
     margin-left: 10px;
@@ -89,26 +87,9 @@
         background: #2980b9;
     }
 }
-
-/* Delete button for each task item */
-.delete-task-btn {
-    padding: 5px 10px;
-    cursor: pointer;
-    background: #e74c3c;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    margin-left: 10px;
-
-    &:hover {
-        background: #c0392b;
-    }
-}
-
-/* Task list styling */
 .task-list {
-    list-style-type: none; /* Remove default list styling */
-    padding: 0; /* Remove default padding */
+    list-style-type: none; 
+    padding: 0; 
 
     li {
         padding: 10px;
@@ -118,12 +99,47 @@
         justify-content: space-between;
         align-items: center;
         border-radius: 4px;
+        min-width: 500px;
+        
+        .button-group {
+            display: flex;
+            gap: 5px; 
+        }
     }
 }
 
+.delete-task-btn, .edit-task-btn {
+    padding: 5px 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+}
+
+.delete-task-btn {
+    background: #e74c3c;
+    color: white;
+    margin-left: 10px;
+
+    &:hover {
+        background: #c0392b;
+    }
+}
+
+.edit-task-btn {
+    background: rgb(243, 194, 31);
+    color: white;
+    margin-left: 5px;
+
+    &:hover {
+        background: #c0732b;
+    }
+}
 .mainSide {
     width: 100%;
     height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }
 .allContent{
     width: 100vw;
